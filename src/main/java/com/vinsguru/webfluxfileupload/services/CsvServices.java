@@ -4,8 +4,12 @@ import com.opencsv.CSVReader;
 import com.opencsv.exceptions.CsvException;
 import com.vinsguru.webfluxfileupload.Models.Product;
 import com.vinsguru.webfluxfileupload.repositories.ProductRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.reactivestreams.Subscriber;
 import org.reactivestreams.Subscription;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -13,13 +17,15 @@ import reactor.core.publisher.Mono;
 import java.io.*;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Iterator;
 import java.util.List;
 
 @Service
+@Slf4j
 public class CsvServices {
 
     private final Path basePath = Paths.get("./src/main/resources/upload/");
+
+    @Autowired
     private final ProductRepository productRepository;
 
     public CsvServices(ProductRepository productRepository){
@@ -67,5 +73,21 @@ public class CsvServices {
 
     public Flux<Product> getAll(){
         return productRepository.findAll();
+    }
+
+    public Mono<Product> updateProduct(Product product) {
+        return productRepository.save(product);
+//        return this.productRepository.findById(id)
+//                .flatMap(p -> productMono.map(u -> {
+//                    p.setItemName(u.getItemName());
+//                    p.setProductPrice(u.getProductPrice());
+//                    return p;
+//                })).flatMap(product -> this.productRepository.save(product));
+    }
+
+    public Mono<Void> deleteProduct(final long id){
+        return this.productRepository.findById(id)
+                .flatMap(product ->
+                        this.productRepository.delete(product));
     }
 }

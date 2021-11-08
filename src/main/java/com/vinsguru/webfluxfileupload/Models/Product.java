@@ -1,19 +1,25 @@
 package com.vinsguru.webfluxfileupload.Models;
 
 import org.springframework.data.annotation.Id;
+import org.springframework.data.relational.core.mapping.Column;
+import org.springframework.data.relational.core.mapping.Embedded;
 import org.springframework.data.relational.core.mapping.Table;
+import org.springframework.lang.Nullable;
 
 import java.util.Objects;
 
-@Table("store.PRODUCT")
+@Table("products")
 public class Product {
 
     @Id
     private Long id;
 
-    private final String itemName;
+    @Column("itemName")
+    private String itemName;
 
-    private final String productPrice;
+    @Nullable
+    @Column("priceProduct")
+    private String productPrice;
 
     public Product(String itemName, String productPrice) {
         this.itemName = itemName;
@@ -34,6 +40,14 @@ public class Product {
 
     public String getProductPrice() {
         return productPrice;
+    }
+
+    public void setItemName(String name){
+        this.itemName = name;
+    }
+
+    public void setProductPrice(String price){
+        this.productPrice = price;
     }
 
     @Override

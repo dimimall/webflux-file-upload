@@ -7,6 +7,9 @@ import com.vinsguru.webfluxfileupload.repositories.ProductRepository;
 import com.vinsguru.webfluxfileupload.services.CsvServices;
 import org.reactivestreams.Subscriber;
 import org.reactivestreams.Subscription;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.http.codec.multipart.FilePart;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -20,17 +23,42 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 
-@Controller
-@RequestMapping("index")
+@RestController
+@RequestMapping("/api")
 public class UploadController {
 
     private final Path basePath = Paths.get("./src/main/resources/upload/");
-    private final ProductRepository productRepository;
+    @Autowired
     private final CsvServices csvServices;
 
-    public UploadController(ProductRepository productRepository, CsvServices csvServices){
-        this.productRepository = productRepository;
+    public UploadController(CsvServices csvServices){
         this.csvServices = csvServices;
+    }
+
+    @GetMapping("/products")
+    public Flux<Product> listProducts(){
+        return csvServices.getAll();
+    }
+
+    @PostMapping(value = "/create")
+    public Mono<Product> addNewProduct(@RequestBody Product product) {
+        if (product != null){
+            product.toString();
+        }
+        return csvServices.newProduct(product);
+    }
+
+    @PutMapping("/upload")
+    public Mono<ResponseEntity<Product>> updateProduct(@RequestBody Product productMono){
+        return this.csvServices.updateProduct(productMono).map(ResponseEntity::ok)
+                .defaultIfEmpty(ResponseEntity.notFound().build());
+    }
+
+    @DeleteMapping("/delete/{id}")
+    public Mono<ResponseEntity<Void>> deleteProduct(@PathVariable Long id){
+        return this.csvServices.deleteProduct(id)
+                .then(Mono.just(new ResponseEntity<Void>(HttpStatus.OK)))
+                .defaultIfEmpty(new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 //
 //    @RequestMapping(value = "index/upload", method = RequestMethod.POST)

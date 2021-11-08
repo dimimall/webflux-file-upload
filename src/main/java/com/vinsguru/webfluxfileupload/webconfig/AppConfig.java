@@ -1,24 +1,25 @@
-//package com.vinsguru.webfluxfileupload.webconfig;
-//
-//import org.springframework.beans.BeansException;
-//import org.springframework.context.ApplicationContext;
-//import org.springframework.context.ApplicationContextAware;
-//import org.springframework.context.annotation.Bean;
-//import org.springframework.context.annotation.Configuration;
-//import org.springframework.web.reactive.config.EnableWebFlux;
-//import org.springframework.web.reactive.config.ViewResolverRegistry;
-//import org.springframework.web.reactive.config.WebFluxConfigurer;
-//import org.thymeleaf.spring5.ISpringWebFluxTemplateEngine;
-//import org.thymeleaf.spring5.SpringWebFluxTemplateEngine;
-//import org.thymeleaf.spring5.templateresolver.SpringResourceTemplateResolver;
-//import org.thymeleaf.spring5.view.reactive.ThymeleafReactiveViewResolver;
-//import org.thymeleaf.templatemode.TemplateMode;
-//import org.thymeleaf.templateresolver.ITemplateResolver;
+package com.vinsguru.webfluxfileupload.webconfig;
+
+import org.springframework.beans.BeansException;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.web.reactive.config.EnableWebFlux;
+import org.springframework.web.reactive.config.ResourceHandlerRegistry;
+import org.springframework.web.reactive.config.ViewResolverRegistry;
+import org.springframework.web.reactive.config.WebFluxConfigurer;
+import org.thymeleaf.spring5.ISpringWebFluxTemplateEngine;
+import org.thymeleaf.spring5.SpringWebFluxTemplateEngine;
+import org.thymeleaf.spring5.templateresolver.SpringResourceTemplateResolver;
+import org.thymeleaf.spring5.view.reactive.ThymeleafReactiveViewResolver;
+import org.thymeleaf.templatemode.TemplateMode;
+import org.thymeleaf.templateresolver.ITemplateResolver;
 //
 //
 //@Configuration
 //@EnableWebFlux
-//public class AppConfig implements ApplicationContextAware, WebFluxConfigurer{
+//public class AppConfig implements  WebFluxConfigurer{
 //
 //    ApplicationContext context;
 //

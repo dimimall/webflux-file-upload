@@ -32,13 +32,13 @@ public class LoadDataController {
         this.csvServices = csvServices;
     }
 
-    @RequestMapping(value = "index", method = RequestMethod.POST)
-    public Mono<Product> addNewStudent(@RequestBody Product product) {
-        if (product != null){
-            product.toString();
-        }
-        return csvServices.newProduct(product);
-    }
+//    @RequestMapping(value = "create", method = RequestMethod.POST)
+//    public Mono<Product> addNewProduct(@RequestBody Product product) {
+//        if (product != null){
+//            product.toString();
+//        }
+//        return csvServices.newProduct(product);
+//    }
 
     @RequestMapping(value = "/second/redirect", method = RequestMethod.GET)
     public Mono<Void> redirectHome(ServerHttpResponse response){

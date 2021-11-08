@@ -9,7 +9,6 @@ import org.springframework.web.reactive.function.server.ServerResponse;
 
 import java.net.URI;
 
-import static org.springframework.http.MediaType.APPLICATION_FORM_URLENCODED;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.web.reactive.function.server.RequestPredicates.*;
 
@@ -18,11 +17,15 @@ public class WelcomeRouter {
     @Bean
     public RouterFunction<ServerResponse> route(WelcomeHandler welcomeHandler) {
         return RouterFunctions
-                .route(POST("/index")
+                .route(POST("/api/create")
                                 .and(accept(APPLICATION_JSON)),welcomeHandler::addNewProduct)
+                .andRoute(GET("/products")
+                                .and(accept(APPLICATION_JSON)), welcomeHandler::listProducts)
                 .andRoute(GET("/second/redirect"), req ->
                         ServerResponse.temporaryRedirect(URI.create("/second"))
-                                .build());
+                                .build())
+                .andRoute(PUT("/api/upload/{id:[0-9]+}").and(accept(APPLICATION_JSON)),welcomeHandler::updateProduct)
+                .andRoute(DELETE("/api/delete/{id:[0-9]+}").and(accept(APPLICATION_JSON)),welcomeHandler::deleteProduct);
     }
 
 }
