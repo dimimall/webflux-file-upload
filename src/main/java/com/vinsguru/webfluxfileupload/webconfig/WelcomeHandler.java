@@ -1,6 +1,7 @@
 package com.vinsguru.webfluxfileupload.webconfig;
 
 import com.vinsguru.webfluxfileupload.Models.Product;
+import com.vinsguru.webfluxfileupload.Models.User;
 import com.vinsguru.webfluxfileupload.services.CsvServices;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -59,6 +60,44 @@ public class WelcomeHandler {
     public Mono<ServerResponse> deleteProduct(ServerRequest serverRequest) {
         final long id= Long.parseLong(serverRequest.pathVariable("id"));
         return ServerResponse.noContent().build(csvServices.deleteProduct(id))
+                .switchIfEmpty(ServerResponse.notFound().build());
+    }
+
+    public Mono<ServerResponse> getUser(ServerRequest serverRequest) {
+        Mono<User> userMono = csvServices.getUser(
+                Long.parseLong(serverRequest.pathVariable("id")));
+        return userMono.flatMap(user -> ServerResponse.ok()
+                .body(fromValue(user)))
+                .switchIfEmpty(ServerResponse.notFound().build());
+    }
+
+    public Mono<ServerResponse> addNewUser(ServerRequest serverRequest) {
+        Mono<User> userMono = serverRequest.bodyToMono(User.class);
+        return userMono.flatMap(user ->
+                ServerResponse.status(HttpStatus.OK)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .body(csvServices.newUser(user), User.class));
+    }
+
+    public Mono<ServerResponse> updateUser(ServerRequest serverRequest) {
+        final long id = Long.parseLong(serverRequest.pathVariable("id"));
+        Mono<User> userMono = serverRequest.bodyToMono(User.class);
+
+        return userMono.flatMap(user ->
+                ServerResponse.status(HttpStatus.OK)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .body(csvServices.updateUser(id,user), User.class));
+    }
+
+    public Mono<ServerResponse> listUsers(ServerRequest serverRequest) {
+        return ServerResponse.ok()
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(csvServices.getAllUser(), User.class);
+    }
+
+    public Mono<ServerResponse> deleteUser(ServerRequest serverRequest) {
+        final long id= Long.parseLong(serverRequest.pathVariable("id"));
+        return ServerResponse.noContent().build(csvServices.deleteUser(id))
                 .switchIfEmpty(ServerResponse.notFound().build());
     }
 }

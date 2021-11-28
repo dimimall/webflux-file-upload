@@ -19,15 +19,23 @@ public class WelcomeRouter {
         return RouterFunctions
                 .route(POST("/api/create")
                                 .and(accept(APPLICATION_JSON)),welcomeHandler::addNewProduct)
-                .andRoute(GET("/products/{id:[0-9]+}")
+                .andRoute(GET("/api/products/{id:[0-9]+}")
                                 .and(accept(APPLICATION_JSON)), welcomeHandler::getProduct)
-                .andRoute(GET("/products/")
+                .andRoute(GET("/api/products/")
                         .and(accept(APPLICATION_JSON)), welcomeHandler::listProducts)
                 .andRoute(GET("/add/redirect"), req ->
                         ServerResponse.temporaryRedirect(URI.create("/product"))
                                 .build())
                 .andRoute(PUT("/api/upload/{id:[0-9]+}").and(accept(APPLICATION_JSON)),welcomeHandler::updateProduct)
-                .andRoute(DELETE("/api/delete/{id:[0-9]+}").and(accept(APPLICATION_JSON)),welcomeHandler::deleteProduct);
+                .andRoute(DELETE("/api/delete/{id:[0-9]+}").and(accept(APPLICATION_JSON)),welcomeHandler::deleteProduct)
+                .andRoute(GET("/api/users/{id:[0-9]+}")
+                        .and(accept(APPLICATION_JSON)), welcomeHandler::getUser)
+                .andRoute(PUT("/api/upload/user/{id:[0-9]+}").and(accept(APPLICATION_JSON)),welcomeHandler::updateUser)
+                .andRoute(POST("/api/create/user")
+                        .and(accept(APPLICATION_JSON)),welcomeHandler::addNewUser)
+                .andRoute(GET("/api/users/")
+                        .and(accept(APPLICATION_JSON)), welcomeHandler::listUsers)
+                .andRoute(DELETE("/api/delete/user/{id:[0-9]+}").and(accept(APPLICATION_JSON)),welcomeHandler::deleteUser);
     }
 
 }

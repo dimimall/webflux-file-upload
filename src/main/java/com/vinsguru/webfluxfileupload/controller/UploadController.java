@@ -3,6 +3,7 @@ package com.vinsguru.webfluxfileupload.controller;
 import com.opencsv.CSVReader;
 import com.opencsv.exceptions.CsvException;
 import com.vinsguru.webfluxfileupload.Models.Product;
+import com.vinsguru.webfluxfileupload.Models.User;
 import com.vinsguru.webfluxfileupload.repositories.ProductRepository;
 import com.vinsguru.webfluxfileupload.services.CsvServices;
 import org.reactivestreams.Subscriber;
@@ -70,7 +71,42 @@ public class UploadController {
                 .then(Mono.just(new ResponseEntity<Void>(HttpStatus.OK)))
                 .defaultIfEmpty(new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
-//
+
+    @GetMapping("/users/{id}")
+    public Mono<ResponseEntity<User>> user(@PathVariable Long id) {
+        return csvServices.getUser(id).
+                map(ResponseEntity::ok)
+                .defaultIfEmpty(ResponseEntity.notFound().build());
+
+    }
+
+    @PostMapping(value = "/create/user")
+    public Mono<User> addNewUser(@RequestBody User user) {
+        if (user != null){
+            user.toString();
+            System.out.println(user.toString());
+        }
+        return csvServices.newUser(user);
+    }
+
+    @PutMapping("/upload/user/{id}")
+    public Mono<ResponseEntity<User>> updateUser(@PathVariable Long id,@RequestBody User user){
+        return this.csvServices.updateUser(id,user).map(ResponseEntity::ok)
+                .defaultIfEmpty(ResponseEntity.notFound().build());
+    }
+
+    @GetMapping("/users")
+    public Flux<User> listUsers(){
+        return csvServices.getAllUser();
+    }
+
+    @DeleteMapping("/delete/user/{id}")
+    public Mono<ResponseEntity<Void>> deleteUser(@PathVariable Long id){
+        return this.csvServices.deleteUser(id)
+                .then(Mono.just(new ResponseEntity<Void>(HttpStatus.OK)))
+                .defaultIfEmpty(new ResponseEntity<>(HttpStatus.NOT_FOUND));
+    }
+
 //    @RequestMapping(value = "index/upload", method = RequestMethod.POST)
 //    public String upload(@RequestPart("user-name") String name,
 //                               @RequestPart("fileToUpload") Mono<FilePart> filePartMono, Model model){
