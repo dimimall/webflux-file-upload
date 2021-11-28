@@ -75,14 +75,15 @@ public class CsvServices {
         return productRepository.findAll();
     }
 
-    public Mono<Product> updateProduct(Product product) {
-        return productRepository.save(product);
-//        return this.productRepository.findById(id)
-//                .flatMap(p -> productMono.map(u -> {
-//                    p.setItemName(u.getItemName());
-//                    p.setProductPrice(u.getProductPrice());
-//                    return p;
-//                })).flatMap(product -> this.productRepository.save(product));
+    public Mono<Product> getProduct(long id) { return productRepository.findById(id); }
+
+    public Mono<Product> updateProduct(long id,Product productMono) {
+        return this.productRepository.findById(id)
+               .flatMap(product -> {
+                   product.setItemName(productMono.getItemName());
+                   product.setProductPrice(productMono.getProductPrice());
+                   return productRepository.save(product);
+               });
     }
 
     public Mono<Void> deleteProduct(final long id){

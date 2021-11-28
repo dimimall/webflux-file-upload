@@ -19,10 +19,12 @@ public class WelcomeRouter {
         return RouterFunctions
                 .route(POST("/api/create")
                                 .and(accept(APPLICATION_JSON)),welcomeHandler::addNewProduct)
-                .andRoute(GET("/products")
-                                .and(accept(APPLICATION_JSON)), welcomeHandler::listProducts)
-                .andRoute(GET("/second/redirect"), req ->
-                        ServerResponse.temporaryRedirect(URI.create("/second"))
+                .andRoute(GET("/products/{id:[0-9]+}")
+                                .and(accept(APPLICATION_JSON)), welcomeHandler::getProduct)
+                .andRoute(GET("/products/")
+                        .and(accept(APPLICATION_JSON)), welcomeHandler::listProducts)
+                .andRoute(GET("/add/redirect"), req ->
+                        ServerResponse.temporaryRedirect(URI.create("/product"))
                                 .build())
                 .andRoute(PUT("/api/upload/{id:[0-9]+}").and(accept(APPLICATION_JSON)),welcomeHandler::updateProduct)
                 .andRoute(DELETE("/api/delete/{id:[0-9]+}").and(accept(APPLICATION_JSON)),welcomeHandler::deleteProduct);

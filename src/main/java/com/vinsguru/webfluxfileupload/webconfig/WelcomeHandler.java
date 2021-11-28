@@ -11,6 +11,8 @@ import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Mono;
 
+import static org.springframework.web.reactive.function.BodyInserters.fromValue;
+
 @Component
 @Slf4j
 public class WelcomeHandler {
@@ -28,6 +30,14 @@ public class WelcomeHandler {
                 .body(csvServices.getAll(), Product.class);
     }
 
+    public Mono<ServerResponse> getProduct(ServerRequest serverRequest) {
+        Mono<Product> studentMono = csvServices.getProduct(
+                Long.parseLong(serverRequest.pathVariable("id")));
+        return studentMono.flatMap(student -> ServerResponse.ok()
+                        .body(fromValue(student)))
+                .switchIfEmpty(ServerResponse.notFound().build());
+    }
+
     public Mono<ServerResponse> addNewProduct(ServerRequest serverRequest) {
         Mono<Product> productMono = serverRequest.bodyToMono(Product.class);
         return productMono.flatMap(product ->
@@ -37,12 +47,13 @@ public class WelcomeHandler {
     }
 
     public Mono<ServerResponse> updateProduct(ServerRequest serverRequest) {
-        //final long id = Long.parseLong(serverRequest.pathVariable("id"));
+        final long id = Long.parseLong(serverRequest.pathVariable("id"));
         Mono<Product> productMono = serverRequest.bodyToMono(Product.class);
+
         return productMono.flatMap(product ->
                 ServerResponse.status(HttpStatus.OK)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .body(csvServices.updateProduct(product), Product.class));
+                        .body(csvServices.updateProduct(id,product), Product.class));
     }
 
     public Mono<ServerResponse> deleteProduct(ServerRequest serverRequest) {

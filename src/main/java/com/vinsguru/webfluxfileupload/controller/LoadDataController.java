@@ -40,10 +40,10 @@ public class LoadDataController {
 //        return csvServices.newProduct(product);
 //    }
 
-    @RequestMapping(value = "/second/redirect", method = RequestMethod.GET)
+    @RequestMapping(value = "/add/redirect", method = RequestMethod.GET)
     public Mono<Void> redirectHome(ServerHttpResponse response){
         response.setStatusCode(HttpStatus.PERMANENT_REDIRECT);
-        response.getHeaders().setLocation(URI.create("/second"));
+        response.getHeaders().setLocation(URI.create("/product"));
         return response.setComplete();
     }
 

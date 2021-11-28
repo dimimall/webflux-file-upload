@@ -23,6 +23,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 
+@CrossOrigin(origins ={"http://localhost:3000"})
 @RestController
 @RequestMapping("/api")
 public class UploadController {
@@ -40,17 +41,26 @@ public class UploadController {
         return csvServices.getAll();
     }
 
+    @GetMapping("/products/{id}")
+    public Mono<ResponseEntity<Product>> product(@PathVariable Long id) {
+        return csvServices.getProduct(id).
+        map(ResponseEntity::ok)
+                .defaultIfEmpty(ResponseEntity.notFound().build());
+
+    }
+
     @PostMapping(value = "/create")
     public Mono<Product> addNewProduct(@RequestBody Product product) {
         if (product != null){
             product.toString();
+            System.out.println(product.toString());
         }
         return csvServices.newProduct(product);
     }
 
-    @PutMapping("/upload")
-    public Mono<ResponseEntity<Product>> updateProduct(@RequestBody Product productMono){
-        return this.csvServices.updateProduct(productMono).map(ResponseEntity::ok)
+    @PutMapping("/upload/{id}")
+    public Mono<ResponseEntity<Product>> updateProduct(@PathVariable Long id,@RequestBody Product productMono){
+        return this.csvServices.updateProduct(id,productMono).map(ResponseEntity::ok)
                 .defaultIfEmpty(ResponseEntity.notFound().build());
     }
 
