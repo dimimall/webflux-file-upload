@@ -55,16 +55,6 @@
 			<artifactId>r2dbc-mariadb</artifactId>
 			<version>0.8.2-alpha2</version>
 		</dependency>
-		<!--		<dependency>-->
-<!--			<groupId>com.h2database</groupId>-->
-<!--			<artifactId>h2</artifactId>-->
-<!--			<scope>runtime</scope>-->
-<!--		</dependency>-->
-<!--		<dependency>-->
-<!--			<groupId>io.r2dbc</groupId>-->
-<!--			<artifactId>r2dbc-h2</artifactId>-->
-<!--			<scope>runtime</scope>-->
-<!--		</dependency>-->
 		<dependency>
 			<groupId>com.opencsv</groupId>
 			<artifactId>opencsv</artifactId>
