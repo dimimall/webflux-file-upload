@@ -35,7 +35,13 @@ public class WelcomeRouter {
                         .and(accept(APPLICATION_JSON)),welcomeHandler::addNewUser)
                 .andRoute(GET("/api/users/")
                         .and(accept(APPLICATION_JSON)), welcomeHandler::listUsers)
-                .andRoute(DELETE("/api/delete/user/{id:[0-9]+}").and(accept(APPLICATION_JSON)),welcomeHandler::deleteUser);
+                .andRoute(DELETE("/api/delete/user/{id:[0-9]+}").and(accept(APPLICATION_JSON)),welcomeHandler::deleteUser)
+                .andRoute(GET("/api/cart/{id:[0-9]+}")
+                        .and(accept(APPLICATION_JSON)), welcomeHandler::getCart)
+                .andRoute(PUT("/api/upload/cart/{id:[0-9]+}").and(accept(APPLICATION_JSON)),welcomeHandler::updateCart)
+                .andRoute(POST("/api/create/cart")
+                        .and(accept(APPLICATION_JSON)),welcomeHandler::addNewCart)
+                .andRoute(DELETE("/api/delete/cart/{id:[0-9]+}").and(accept(APPLICATION_JSON)),welcomeHandler::deleteCart);
     }
 
 }

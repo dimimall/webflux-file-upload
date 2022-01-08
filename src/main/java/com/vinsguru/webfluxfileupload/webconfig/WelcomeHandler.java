@@ -1,5 +1,6 @@
 package com.vinsguru.webfluxfileupload.webconfig;
 
+import com.vinsguru.webfluxfileupload.Models.Cart;
 import com.vinsguru.webfluxfileupload.Models.Product;
 import com.vinsguru.webfluxfileupload.Models.User;
 import com.vinsguru.webfluxfileupload.services.CsvServices;
@@ -10,7 +11,10 @@ import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+
+import java.util.List;
 
 import static org.springframework.web.reactive.function.BodyInserters.fromValue;
 
@@ -98,6 +102,38 @@ public class WelcomeHandler {
     public Mono<ServerResponse> deleteUser(ServerRequest serverRequest) {
         final long id= Long.parseLong(serverRequest.pathVariable("id"));
         return ServerResponse.noContent().build(csvServices.deleteUser(id))
+                .switchIfEmpty(ServerResponse.notFound().build());
+    }
+
+    public Mono<ServerResponse> getCart(ServerRequest serverRequest) {
+        final String id = serverRequest.pathVariable("id");
+        return ServerResponse.ok()
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(csvServices.getCartById(Long.parseLong(id)),Cart.class);
+    }
+
+    public Mono<ServerResponse> addNewCart(ServerRequest serverRequest) {
+        Mono<Cart> cartMono = serverRequest.bodyToMono(Cart.class);
+        return cartMono.flatMap(cart ->
+                ServerResponse.status(HttpStatus.OK)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .body(csvServices.newCart(cart), Cart.class));
+    }
+
+    public Mono<ServerResponse> updateCart(ServerRequest serverRequest) {
+        final long id = Long.parseLong(serverRequest.pathVariable("id"));
+        Mono<Cart> cartMono = serverRequest.bodyToMono(Cart.class);
+
+        return cartMono.flatMap(cart ->
+                ServerResponse.status(HttpStatus.OK)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .body(csvServices.updateCart(id,cart), Cart.class));
+    }
+
+
+    public Mono<ServerResponse> deleteCart(ServerRequest serverRequest) {
+        final long id= Long.parseLong(serverRequest.pathVariable("id"));
+        return ServerResponse.noContent().build(csvServices.deleteCart(id))
                 .switchIfEmpty(ServerResponse.notFound().build());
     }
 }

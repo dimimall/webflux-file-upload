@@ -2,8 +2,10 @@ package com.vinsguru.webfluxfileupload.services;
 
 import com.opencsv.CSVReader;
 import com.opencsv.exceptions.CsvException;
+import com.vinsguru.webfluxfileupload.Models.Cart;
 import com.vinsguru.webfluxfileupload.Models.Product;
 import com.vinsguru.webfluxfileupload.Models.User;
+import com.vinsguru.webfluxfileupload.repositories.CartRepository;
 import com.vinsguru.webfluxfileupload.repositories.ProductRepository;
 import com.vinsguru.webfluxfileupload.repositories.UserRepository;
 import lombok.extern.slf4j.Slf4j;
@@ -29,45 +31,13 @@ public class CsvServices {
     private final ProductRepository productRepository;
     @Autowired
     private final UserRepository userRepository;
+    @Autowired
+    private final CartRepository cartRepository;
 
-    public CsvServices(ProductRepository productRepository,UserRepository userRepository){
+    public CsvServices(ProductRepository productRepository,UserRepository userRepository, CartRepository cartRepository){
         this.productRepository = productRepository;
         this.userRepository = userRepository;
-    }
-
-    public CSVReader csvReader(String name) throws FileNotFoundException {
-        InputStream inputStream = new FileInputStream(name);
-        Reader reader = new BufferedReader(new InputStreamReader(inputStream));
-        CSVReader csvReader = new CSVReader(reader);
-        return csvReader;
-    }
-
-    public void nextProduct(CSVReader csvReader) throws IOException, CsvException {
-        List<String[]> csv = csvReader.readAll();
-        Flux.just(csv).subscribe(new Subscriber<List<String[]>>() {
-            @Override
-            public void onSubscribe(Subscription s) {
-                System.out.println(s.toString());
-            }
-
-            @Override
-            public void onNext(List<String[]> strings) {
-                for (String[] string: strings) {
-                    System.out.println(string[0]+" "+string[1]);
-                    productRepository.save(new Product(string[0],string[1]));
-                }
-            }
-
-            @Override
-            public void onError(Throwable t) {
-                System.out.println(t.getLocalizedMessage());
-            }
-
-            @Override
-            public void onComplete() {
-                System.out.println("Complete");
-            }
-        });
+        this.cartRepository = cartRepository;
     }
 
     public Mono<Product> newProduct(Product product){
@@ -118,5 +88,30 @@ public class CsvServices {
         return this.userRepository.findById(id)
                 .flatMap(user ->
                         this.userRepository.delete(user));
+    }
+
+    public Mono<Cart> newCart(Cart cart){
+        return cartRepository.save(cart);
+    }
+
+    public Flux<Cart> getCartById(Long id){
+        return cartRepository.findCartById(id);
+    }
+
+    public Mono<Cart> updateCart(long id,Cart cart) {
+        return this.cartRepository.findById(id)
+                .flatMap(cart1 -> {
+                    cart1.setProductId(cart.getProductId());
+                    cart1.setProductName(cart.getProductName());
+                    cart1.setProductPrice(cart.getProductPrice());
+                    cart1.setUserId(cart.getUserId());
+                    return cartRepository.save(cart1);
+                });
+    }
+
+    public Mono<Void> deleteCart(final long id){
+        return this.cartRepository.findById(id)
+                .flatMap(cart ->
+                        this.cartRepository.delete(cart));
     }
 }

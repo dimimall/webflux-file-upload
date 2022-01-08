@@ -2,6 +2,7 @@ package com.vinsguru.webfluxfileupload.controller;
 
 import com.opencsv.CSVReader;
 import com.opencsv.exceptions.CsvException;
+import com.vinsguru.webfluxfileupload.Models.Cart;
 import com.vinsguru.webfluxfileupload.Models.Product;
 import com.vinsguru.webfluxfileupload.Models.User;
 import com.vinsguru.webfluxfileupload.services.CsvServices;
@@ -104,31 +105,31 @@ public class UploadController {
                 .defaultIfEmpty(new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
-//    @RequestMapping(value = "index/upload", method = RequestMethod.POST)
-//    public String upload(@RequestPart("user-name") String name,
-//                               @RequestPart("fileToUpload") Mono<FilePart> filePartMono, Model model){
-//        filePartMono
-//                .doOnNext(fp -> System.out.println("Received File : " + fp.filename()))
-//                .flatMap(fp ->
-//                    fp.transferTo(basePath.resolve(fp.filename())))
-//                .then();
-//
-//        model.addAttribute("name",name);
-//        RedirectView redirectView = new RedirectView();
-//        redirectView.setContextRelative(true);
-//        redirectView.setUrl("/home/{name}");
-//
-//        return "home";
-//    }
-//
-//    @PostMapping("file/multi1")
-//    public String upload(@RequestPart("files") Flux<FilePart> partFlux){
-//        partFlux
-//                .doOnNext(fp -> System.out.println(fp.filename()))
-//                .flatMap(fp -> fp.transferTo(basePath.resolve(fp.filename())))
-//                .then();
-//        return "templates/home";
-//    }
+    @GetMapping("/cart/{id}")
+    public Flux<Cart> cart(@PathVariable Long id) {
+        return csvServices.getCartById(id);
 
+    }
 
+    @PostMapping(value = "/create/cart")
+    public Mono<Cart> addNewCart(@RequestBody Cart cart) {
+        if (cart != null){
+            cart.toString();
+            System.out.println(cart.toString());
+        }
+        return csvServices.newCart(cart);
+    }
+
+    @PutMapping("/upload/cart/{id}")
+    public Mono<ResponseEntity<Cart>> updateCart(@PathVariable Long id,@RequestBody Cart cart){
+        return this.csvServices.updateCart(id,cart).map(ResponseEntity::ok)
+                .defaultIfEmpty(ResponseEntity.notFound().build());
+    }
+
+    @DeleteMapping("/delete/cart/{id}")
+    public Mono<ResponseEntity<Void>> deleteCart(@PathVariable Long id){
+        return this.csvServices.deleteCart(id)
+                .then(Mono.just(new ResponseEntity<Void>(HttpStatus.OK)))
+                .defaultIfEmpty(new ResponseEntity<>(HttpStatus.NOT_FOUND));
+    }
 }
