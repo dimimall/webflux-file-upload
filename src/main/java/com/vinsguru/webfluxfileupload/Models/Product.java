@@ -8,6 +8,9 @@ import org.springframework.lang.Nullable;
 
 import java.util.Objects;
 
+//create cart model and teble database
+// with id auto increment product name product price
+// these are a columns in database and properties in class Product
 @Table("products")
 public class Product {
 
@@ -21,11 +24,13 @@ public class Product {
     @Column("priceProduct")
     private String productPrice;
 
+    //constractor product Model
     public Product(String itemName, String productPrice) {
         this.itemName = itemName;
         this.productPrice = productPrice;
     }
 
+    //setter and getter
     public Long getId() {
         return id;
     }
@@ -50,6 +55,7 @@ public class Product {
         this.productPrice = price;
     }
 
+    //create classes inherited from super class Object equals, hashcode, toString
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

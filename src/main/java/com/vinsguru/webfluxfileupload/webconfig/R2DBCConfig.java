@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
+//create r2db rective database configuration (mariadb) connect to db.properties file
 @Configuration
 @EnableR2dbcRepositories
 public class R2DBCConfig extends AbstractR2dbcConfiguration {

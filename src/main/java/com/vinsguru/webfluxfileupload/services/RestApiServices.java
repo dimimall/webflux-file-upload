@@ -21,9 +21,11 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 
+//service class connect databse to controller and view
+//create CRUD product, user and cart
 @Service
 @Slf4j
-public class CsvServices {
+public class RestApiServices {
 
     private final Path basePath = Paths.get("./src/main/resources/upload/");
 
@@ -34,7 +36,7 @@ public class CsvServices {
     @Autowired
     private final CartRepository cartRepository;
 
-    public CsvServices(ProductRepository productRepository,UserRepository userRepository, CartRepository cartRepository){
+    public RestApiServices(ProductRepository productRepository, UserRepository userRepository, CartRepository cartRepository){
         this.productRepository = productRepository;
         this.userRepository = userRepository;
         this.cartRepository = cartRepository;
@@ -82,6 +84,10 @@ public class CsvServices {
 
     public Flux<User> getAllUser(){
         return userRepository.findAll();
+    }
+
+    public Mono<User> getUserByIdPassword(long id, String password){
+        return this.userRepository.getUserByIdPassword(id,password);
     }
 
     public Mono<Void> deleteUser(final long id){

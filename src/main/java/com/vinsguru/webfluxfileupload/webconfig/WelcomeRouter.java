@@ -12,6 +12,9 @@ import java.net.URI;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.web.reactive.function.server.RequestPredicates.*;
 
+//functional style programming model with lambda-based
+//leaves application to handle all requests
+//route functions all requests update delete post get for Cart product and user
 @Configuration
 public class WelcomeRouter {
     @Bean
@@ -30,6 +33,8 @@ public class WelcomeRouter {
                 .andRoute(DELETE("/api/delete/{id:[0-9]+}").and(accept(APPLICATION_JSON)),welcomeHandler::deleteProduct)
                 .andRoute(GET("/api/users/{id:[0-9]+}")
                         .and(accept(APPLICATION_JSON)), welcomeHandler::getUser)
+                .andRoute(GET("/api/users/{id:[0-9]+}/{password}")
+                        .and(accept(APPLICATION_JSON)), welcomeHandler::getUserByIdPassword)
                 .andRoute(PUT("/api/upload/user/{id:[0-9]+}").and(accept(APPLICATION_JSON)),welcomeHandler::updateUser)
                 .andRoute(POST("/api/create/user")
                         .and(accept(APPLICATION_JSON)),welcomeHandler::addNewUser)

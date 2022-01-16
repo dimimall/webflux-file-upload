@@ -2,7 +2,7 @@ package com.vinsguru.webfluxfileupload;
 
 import com.vinsguru.webfluxfileupload.Models.User;
 import com.vinsguru.webfluxfileupload.repositories.UserRepository;
-import com.vinsguru.webfluxfileupload.services.CsvServices;
+import com.vinsguru.webfluxfileupload.services.RestApiServices;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
@@ -17,6 +17,8 @@ import reactor.core.publisher.Mono;
 
 import static org.mockito.Mockito.times;
 
+//cretae tests based reactive spring boot with mockito and junit
+//create, update , get and delete users
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class UserRepositoryTest {
@@ -25,7 +27,7 @@ public class UserRepositoryTest {
     UserRepository userRepository;
 
     @MockBean
-    CsvServices csvServices;
+    RestApiServices restApiServices;
 
     @Autowired
     private WebTestClient webClient;
@@ -39,7 +41,7 @@ public class UserRepositoryTest {
 
         System.out.println(user.toString());
 
-        Mockito.when(csvServices.newUser(user)).thenReturn(Mono.just(user));
+        Mockito.when(restApiServices.newUser(user)).thenReturn(Mono.just(user));
 
         webClient.post()
                 .uri("/api/create/user")
@@ -48,7 +50,7 @@ public class UserRepositoryTest {
                 .exchange()
                 .expectStatus().isOk();
 
-        Mockito.verify(csvServices, times(1)).newUser(user);
+        Mockito.verify(restApiServices, times(1)).newUser(user);
     }
 
     @Test
@@ -62,7 +64,7 @@ public class UserRepositoryTest {
         System.out.println(user.toString());
 
         Mockito
-                .when(csvServices.getUser(1L))
+                .when(restApiServices.getUser(1L))
                 .thenReturn(Mono.just(user));
 
         webClient.get().uri("/api/users/{id}", 1)
@@ -73,7 +75,7 @@ public class UserRepositoryTest {
                 .jsonPath("$.name").isEqualTo("Dimitra")
                 .jsonPath("$.role").isEqualTo("admin");
 
-        Mockito.verify(csvServices, times(1)).getUser(1L);
+        Mockito.verify(restApiServices, times(1)).getUser(1L);
     }
 
     @Test
@@ -84,7 +86,7 @@ public class UserRepositoryTest {
         user.setRole("admin");
 
         Mono<Void> voidReturn  = Mono.empty();
-        Mockito.when(csvServices.deleteUser(1L))
+        Mockito.when(restApiServices.deleteUser(1L))
                 .thenReturn(voidReturn);
         webClient.delete().uri("/api/delete/user/{id}", 1)
                 .exchange()

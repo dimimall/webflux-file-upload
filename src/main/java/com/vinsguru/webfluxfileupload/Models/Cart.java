@@ -7,6 +7,9 @@ import org.springframework.lang.Nullable;
 
 import java.util.Objects;
 
+//create cart model and teble database
+// with id auto increment product id user id product name product price
+// these are a columns in database and properties in class Cart
 @Table("cart")
 public class Cart {
 
@@ -28,6 +31,7 @@ public class Cart {
     @Column("quantity")
     private String quantity;
 
+    //constractor
     public Cart(String productId, Long userId, String productName, String productPrice, String quantity) {
         this.productId = productId;
         this.userId = userId;
@@ -36,6 +40,7 @@ public class Cart {
         this.quantity = quantity;
     }
 
+    //setter and getter
     public Long getId() {
         return id;
     }
@@ -84,6 +89,7 @@ public class Cart {
         this.quantity = quantity;
     }
 
+    //equals overide class from Super class object
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -97,11 +103,13 @@ public class Cart {
                 getQuantity().equals(cart.getQuantity());
     }
 
+    //hash code method override
     @Override
     public int hashCode() {
         return Objects.hash(getId(), getProductId(), getUserId(), getProductName(), getProductPrice(), getQuantity());
     }
 
+    //to string method override from super class to display values from properties class
     @Override
     public String toString() {
         return "Cart{" +

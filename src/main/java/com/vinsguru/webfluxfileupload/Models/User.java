@@ -7,6 +7,9 @@ import org.springframework.lang.Nullable;
 
 import java.util.Objects;
 
+//create cart model and teble database
+// with id auto increment user name user role user password
+// these are a columns in database and properties in class User
 @Table("users")
 public class User {
 
@@ -19,15 +22,20 @@ public class User {
     @Column("role")
     private String role;
 
-    public User(String name, String role) {
+    @Column("password")
+    private String password;
+
+    //constractor User Model
+    public User(String name, String role, String password) {
         this.name = name;
         this.role = role;
+        this.password = password;
     }
 
     public User() {
     }
 
-
+    //setter and getter
     public Long getId() {
         return id;
     }
@@ -52,6 +60,15 @@ public class User {
         this.role = role;
     }
 
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    //create classes inherited from super class Object equals, hashcode, toString
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -64,7 +81,7 @@ public class User {
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, role);
+        return Objects.hash(id, name, role, password);
     }
 
     @Override
@@ -73,6 +90,7 @@ public class User {
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", role='" + role + '\'' +
+                ", password='" + password + '\'' +
                 '}';
     }
 }
